@@ -199,7 +199,6 @@ origin    https://github.com/<fork-owner>/C3L.git (push)
 upstream  https://github.com/JGreyScales/C3L.git (fetch)      <- the class repository
 upstream  https://github.com/JGreyScales/C3L.git (push)
 ```
-
 This is the most important picture in the guide:
 
 | Name       | Is                        | You can push to it?                    | Used for                                   |
