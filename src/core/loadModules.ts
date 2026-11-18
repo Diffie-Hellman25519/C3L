@@ -20,7 +20,7 @@ export async function loadModules(app: Elysia, modulesDir: string): Promise<void
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .filter((name) => !name.startsWith('_') && !name.startsWith('.'))
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
 
   for (const folder of folders) {
     try {
