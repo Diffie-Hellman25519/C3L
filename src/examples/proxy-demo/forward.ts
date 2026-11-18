@@ -36,7 +36,16 @@ export async function forwardRequest(
   { target, stripPrefix = '' }: ForwardOptions,
 ): Promise<Response> {
   const url = new URL(request.url)
-  const targetUrl = target + removePrefix(url.pathname, stripPrefix) + url.search
+  const upstream = new URL(target)
+  const forwardedPath = removePrefix(url.pathname, stripPrefix)
+  const targetUrl = new URL(forwardedPath + url.search, upstream)
+
+  // Only ever talk to the configured upstream. Parsing the address first and comparing origins
+  // rejects paths that try to swap the host, such as "//evil.example" (which URL treats as a
+  // protocol-relative address).
+  if (targetUrl.origin !== upstream.origin) {
+    return Response.json({ error: 'Invalid target' }, { status: 400 })
+  }
 
   const headers = new Headers(request.headers)
   headers.delete('host') // fetch fills in the target's host

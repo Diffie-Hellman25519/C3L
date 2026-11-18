@@ -104,6 +104,17 @@ describe('forwardRequest', () => {
     expect(answer.headers.getSetCookie()).toEqual(['a=1; Path=/', 'b=2; Path=/'])
   })
 
+  test('does not let the path replace the upstream host', async () => {
+    const answer = await send('http://proxy.test/api//evil.test/x')
+    expect(answer.status).toBe(400)
+    expect(await answer.json()).toEqual({ error: 'Invalid target' })
+  })
+
+  test('treats an @ in the path as part of the path, not as a new host', async () => {
+    const seen = await seenBy(await send('http://proxy.test/api/@evil.test/x'))
+    expect(seen.path).toBe('/@evil.test/x')
+  })
+
   test('answers 502 when the target is not running', async () => {
     const closed = Bun.serve({ port: 0, fetch: () => new Response('') })
     const deadTarget = `http://127.0.0.1:${closed.port}`
