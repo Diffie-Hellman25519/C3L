@@ -125,9 +125,6 @@ describe('forwardRequest', () => {
       stripPrefix: '/api',
     })
     expect(answer.status).toBe(502)
-    expect(await answer.json()).toEqual({
-      error: 'Target unreachable',
-      target: `${deadTarget}/x`,
-    })
+    expect(await answer.json()).toEqual({ error: 'Target unreachable' })
   })
 })

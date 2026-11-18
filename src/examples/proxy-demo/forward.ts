@@ -75,7 +75,8 @@ export async function forwardRequest(
       headers: answerHeaders,
     })
   } catch {
-    // The target is off, or the address is wrong.
-    return Response.json({ error: 'Target unreachable', target: targetUrl }, { status: 502 })
+    // The target is off, or the address is wrong. Do not echo the upstream address back to the
+    // caller: it is an internal detail.
+    return Response.json({ error: 'Target unreachable' }, { status: 502 })
   }
 }
